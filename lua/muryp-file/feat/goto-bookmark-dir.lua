@@ -2,8 +2,8 @@ local picker = require 'muryp-file.utils.picker'
 
 ---TODO: ADD,REMOVE BOOKMARK
 return function()
-  local PATH = _G.MURYP_FILE.LIST_PROJECT or os.getenv 'HOME' .. '/.muryp/LIST_PROJECT'
-  local GET_LIST_WORKSPACE = vim.fn.system('cat ' .. PATH)
+  local DIR = _G.MURYP_FILE.LIST_PROJECT
+  local GET_LIST_WORKSPACE = vim.fn.system('cat ' .. DIR)
   local LIST_WORKSPACE = vim.fn.split(GET_LIST_WORKSPACE, '\n')
   local function callBack(UserSelect)
     local goTO = ''
@@ -16,7 +16,7 @@ return function()
     end
     local result = string.gsub(goTO, '.*=>', '')
     vim.cmd('cd ' .. result)
-    print('your in path: ' .. result)
+    vim.cmd 'Telescope muryp_cd'
   end
 
   picker {

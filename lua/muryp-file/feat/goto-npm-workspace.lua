@@ -1,7 +1,7 @@
 local picker = require 'muryp-file.utils.picker'
 local M = {}
 --- find up file
---- @param PWD string|nil --- current path
+--- @param PWD string|nil --- current dir
 --- @param RgFileMatch string[] --- file name
 --- @return string|nil
 M.findup = function(RgFileMatch, PWD)
@@ -9,8 +9,8 @@ M.findup = function(RgFileMatch, PWD)
     return
   end
   PWD = PWD or vim.fn.getcwd()
-  local getHomePath = vim.fn.expand '~' .. '$'
-  if string.match(PWD, getHomePath) then
+  local getHomeDir = vim.fn.expand '~' .. '$'
+  if string.match(PWD, getHomeDir) then
     return
   end
   local isMatch = true
@@ -30,12 +30,12 @@ end
 
 ---@param OBJ_NAME string
 ---@param FILE string
----@param rootPathWorkspace string
-M.gotoFolder = function(OBJ_NAME, FILE, rootPathWorkspace)
+---@param rootDirWorkspace string
+M.gotoFolder = function(OBJ_NAME, FILE, rootDirWorkspace)
   local CMD = 'yq "((.'
     .. OBJ_NAME
     .. '[]) |= \\"'
-    .. rootPathWorkspace
+    .. rootDirWorkspace
     .. '/\\" + . +\\"/\\") | .'
     .. OBJ_NAME
     .. '[]" '
@@ -46,8 +46,8 @@ M.gotoFolder = function(OBJ_NAME, FILE, rootPathWorkspace)
   local getWorksSpaceList = vim.fn.system('ls -d ' .. string.gsub(getWorksSpaceConf, '\n', ' '))
   local ListWorkSpace = {} ---@type string[]
   for word in string.gmatch(getWorksSpaceList, '([^%s]+)') do
-    local simplifyPath = string.gsub(word, rootPathWorkspace, '')
-    table.insert(ListWorkSpace, simplifyPath)
+    local simplifyDir = string.gsub(word, rootDirWorkspace, '')
+    table.insert(ListWorkSpace, simplifyDir)
   end
   ---@param UserSelect string|string[]
   ---@return nil
@@ -60,9 +60,9 @@ M.gotoFolder = function(OBJ_NAME, FILE, rootPathWorkspace)
         goTO = USER_SELECT
       end
     end
-    local result = rootPathWorkspace .. goTO
+    local result = rootDirWorkspace .. goTO
     vim.cmd('cd ' .. result)
-    print('your in path: ' .. result)
+    print('your directory now : ' .. result)
   end
   picker {
     opts = ListWorkSpace,
@@ -72,17 +72,17 @@ M.gotoFolder = function(OBJ_NAME, FILE, rootPathWorkspace)
   }
 end
 M.getWorkspace = function()
-  local getRootPathPnpm = M.findup { 'pnpm-workspace.yaml', '.git' }
-  local getRootPathNpm = M.findup { 'package.json', '.git' }
+  local getRootDirPnpm = M.findup { 'pnpm-workspace.yaml', '.git' }
+  local getRootDirNpm = M.findup { 'package.json', '.git' }
 
-  if getRootPathPnpm then
-    local FILE = getRootPathPnpm .. '/pnpm-workspace.yaml'
-    M.gotoFolder('packages', FILE, getRootPathPnpm)
+  if getRootDirPnpm then
+    local FILE = getRootDirPnpm .. '/pnpm-workspace.yaml'
+    M.gotoFolder('packages', FILE, getRootDirPnpm)
     return
   end
-  if getRootPathNpm then
-    local FILE = getRootPathNpm .. '/package.json'
-    M.gotoFolder('workspaces', FILE, getRootPathNpm)
+  if getRootDirNpm then
+    local FILE = getRootDirNpm .. '/package.json'
+    M.gotoFolder('workspaces', FILE, getRootDirNpm)
     return
   end
   print 'no pnpm-workspace.yaml or package.json'

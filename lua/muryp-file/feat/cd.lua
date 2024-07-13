@@ -2,9 +2,9 @@ local picker = require 'muryp-file.utils.picker'
 
 ---TODO: ADD,REMOVE BOOKMARK
 local function cd()
-  local LIST_PATH = vim.fn.system 'find . -maxdepth 1 -type d,l -name "*" -print'
-  LIST_PATH = vim.fn.split(LIST_PATH, '\n')
-  table.insert(LIST_PATH, '..')
+  local LIST_DIR = vim.fn.system 'find . -maxdepth 1 -type d,l -name "*" -print'
+  LIST_DIR = vim.fn.split(LIST_DIR, '\n')
+  table.insert(LIST_DIR, '..')
   local function callBack(UserSelect)
     local goTO = ''
     if type(UserSelect) == 'string' then
@@ -19,11 +19,11 @@ local function cd()
     if result ~= '.' then
       return cd()
     end
-    print('your in path: ' .. result)
+    print('your directory now : ' .. result)
   end
 
   picker {
-    opts = LIST_PATH,
+    opts = LIST_DIR,
     callBack = callBack,
     PREVIEW_OPTS = 'GH_ISSUE',
     title = 'choose your issue',
