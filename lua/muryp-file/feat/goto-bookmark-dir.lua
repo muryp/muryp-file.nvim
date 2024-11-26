@@ -4,7 +4,8 @@ local picker = require 'muryp-file.utils.picker'
 return function()
   local DIR = _G.MURYP_FILE.LIST_PROJECT
   local GET_LIST_WORKSPACE = vim.fn.system('cat ' .. DIR)
-  local LIST_WORKSPACE = vim.fn.split(GET_LIST_WORKSPACE, '\n')
+  local PATH_HOME = vim.env.HOME .. '/'
+  local LIST_WORKSPACE = vim.fn.split(GET_LIST_WORKSPACE:gsub(PATH_HOME, ''), '\n')
   local function callBack(UserSelect)
     local goTO = ''
     if type(UserSelect) == 'string' then
@@ -14,8 +15,8 @@ return function()
         goTO = USER_SELECT
       end
     end
-    local result = string.gsub(goTO, '.*=>', '')
-    vim.cmd('cd ' .. result)
+    local result = string.gsub(goTO, '.*=> ', '')
+    vim.cmd('cd ' .. PATH_HOME .. result)
     vim.cmd 'Telescope muryp_cd'
   end
 
