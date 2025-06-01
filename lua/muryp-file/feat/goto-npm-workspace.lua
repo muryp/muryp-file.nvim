@@ -28,6 +28,10 @@ M.findup = function(RgFileMatch, PWD)
   return PWD
 end
 
+local function escape_pattern(text)
+  return text:gsub("([^%w])", "%%%1")
+end
+
 ---@param OBJ_NAME string
 ---@param FILE string
 ---@param rootDirWorkspace string
@@ -45,8 +49,8 @@ M.gotoFolder = function(OBJ_NAME, FILE, rootDirWorkspace)
   ---@type string --- yaml
   local getWorksSpaceList = vim.fn.system('ls -d ' .. string.gsub(getWorksSpaceConf, '\n', ' '))
   local ListWorkSpace = {} ---@type string[]
-  for word in string.gmatch(getWorksSpaceList, '([^%s]+)') do
-    local simplifyDir = string.gsub(word, rootDirWorkspace, '')
+  for path in string.gmatch(getWorksSpaceList, '([^%s]+)') do
+    local simplifyDir = string.gsub(path, '^'..escape_pattern(rootDirWorkspace), '')
     table.insert(ListWorkSpace, simplifyDir)
   end
   ---@param UserSelect string|string[]
