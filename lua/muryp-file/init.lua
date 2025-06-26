@@ -3,8 +3,9 @@ local M = {}
 M.npm_workspace = require('muryp-file.feat.goto-npm-workspace').getWorkspace
 M.folder_bookmark = require 'muryp-file.feat.goto-bookmark-dir'
 M.cd = require 'muryp-file.feat.cd'
-M.addDir = require 'muryp-file.feat.add-dir'
+M.addBookmark = require 'muryp-file.feat.add-bookmark'
 M.gotoBookmark = require 'muryp-file.feat.gotoPathBookmark'
+M.addDirFile = require 'muryp-file.feat.add-dir-file'
 
 _G.MURYP_FILE = {}
 

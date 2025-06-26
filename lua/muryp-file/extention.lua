@@ -5,5 +5,6 @@ return function()
     plug.npm_workspace = api.npm_workspace
     plug.muryp_dir_bookmark = api.folder_bookmark
     plug.muryp_cd = api.cd
+    plug.addDirFile = require 'muryp-file.feat.add-dir-file'
   end
 end
