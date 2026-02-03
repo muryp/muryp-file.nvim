@@ -1,8 +1,14 @@
 local picker = require 'muryp-file.utils.picker'
 
 ---TODO: ADD,REMOVE BOOKMARK
-local function cd()
-  local LIST_DIR = vim.fn.system 'find . -maxdepth 1 -type d,l -name "*" -print'
+---@param isNested boolean
+local function goTo(isNested)
+  local LIST_DIR
+  if isNested then
+    LIST_DIR = vim.fn.system 'find . -type d,l -name "*" -print'
+  else
+    LIST_DIR = vim.fn.system 'find . -maxdepth 1 -type d,l -name "*" -print'
+  end
   LIST_DIR = vim.fn.split(LIST_DIR, '\n')
   table.insert(LIST_DIR, '..')
   local function callBack(UserSelect)
@@ -17,7 +23,7 @@ local function cd()
     local result = goTO
     vim.cmd('cd ' .. result)
     if result ~= '.' then
-      return cd()
+      return goTo(isNested)
     end
     print('your directory now : ' .. result)
   end
@@ -30,4 +36,11 @@ local function cd()
   }
 end
 
-return cd
+local function cd()
+  goTo(false)
+end
+
+local function CD()
+  goTo(true)
+end
+return { cd = cd, CD = CD }
